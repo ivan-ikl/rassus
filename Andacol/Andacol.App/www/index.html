@@ -18,7 +18,25 @@
     <p>
         <button class="help-btn">Help</button>
     </p>
+    <label id="label1"> Ovo je neki tekst!</label>
+    <script> $('.help-btn').on('click', function () {
+     function alertDismissed() {
+     }
 
+     navigator.notification.alert(
+         'You are the winner!',  // message
+         alertDismissed,         // callback
+         'Game Over',            // title
+         'Done'                  // buttonName
+     );
+     });
+    </script>
+    <button type="button"
+            onclick="document.getElementById('demo').innerHTML = Date()">
+        Click me to display Date and Time.
+    </button>
+
+    <p id="demo"></p>
 
     <!-- Cordova reference, this is added to your app when it's built. -->
     <script src="cordova.js"></script>
