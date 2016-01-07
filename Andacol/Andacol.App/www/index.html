@@ -78,6 +78,11 @@
 
             }, false);
         });
+
+        document.addEventListener('deviceready', function () {
+            // cordova.plugins.backgroundMode is now available
+            cordova.plugins.backgroundMode.enable();
+        }, false);
     </script>
     <button type="button"
             onclick="navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');">
