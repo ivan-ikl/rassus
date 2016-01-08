@@ -1,0 +1,44 @@
+Installation instructions:
+
+1. Install Nuget package ODataTestC
+
+2. Add the following to web.config:
+
+<system.webServer>
+    <handlers>
+		<clear />
+		<!-- Required for odata v4 namespaces -->
+		<add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+    </handlers>
+    <rewrite>
+		<rules>
+			<!-- Required for odata v4 -->
+			<rule name="Add trailing slash" stopProcessing="true">
+				<match url="(odata/.*\..*[^/])$" />
+				<action type="Rewrite" url="{R:1}/" />
+			</rule>
+		</rules>
+    </rewrite>
+    <!-- Required for management -->
+    <modules runAllManagedModulesForAllRequests="true" />
+</system.webServer>
+
+3. Insert OData configuration in App_Start
+config.MapODataServiceRoute("odata", "odata", ODataConfig.GetModel(Assembly.GetExecutingAssembly()));
+
+4. Mark controllers with EntitySet attributes
+
+5. Inherit ODataConfigurableEntity<TEntityType> in entity classes which need to perfom additional configuration and shadow static procedure
+   Configure(EntityTypeConfiguration<TEntityType> config) or Configure(EntityTypeConfiguration<TEntityType> config, ODataModelBuilder builder)
+   If other abstract classes are already inherited, implement the empty IODataConfigurableEntity interface and create the same static procedure
+
+6. Configure additional entity sets by adding using the static method ODataConfig.EntitySet<TEntity>(string name)
+   
+7. Mark controller functions and actions with ODataFunction and ODataAction attributes respectively
+NOTE: Procedures bound to a single entity must have a key parameter
+
+8. Specify return types for OData functions using the following attributes: ODataReturns, ODataReturnsCollection, ODataReturnsFromEntitySet, ODataReturnsCollectionFromEntitySet
+
+9. Specify function and action attributes using the following attributes: ODataParameter, ODataCollectionParameter, ODataEntityParameter, ODataCollectionEntityParameter
+NOTE: Functions recieve parameters through OData URI
+
