@@ -27,7 +27,7 @@ namespace Andacol.Endpoint.Extensions
                 Min = q.Question.Min,
                 Max = q.Question.Max,
                 QuestionText = q.Question.QuestionText,
-                QuestionType = QuestionType.OptionalQuestion
+                QuestionType = QuestionType.ScoreQuestion
             }).Distinct();
             return optional.Concat(score).Select(m => new QuestionViewModel {
                 Id = m.Id,
