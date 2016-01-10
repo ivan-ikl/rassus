@@ -25,7 +25,17 @@ namespace Andacol.Core.Models
         public DateTime NextDue { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public TimeSpan Schedule { get; set; } = TimeSpan.FromDays(1);
+        public long ScheduleTicks { get; set; }
+
+        [NotMapped]
+        public TimeSpan Schedule {
+            get {
+                return TimeSpan.FromTicks(ScheduleTicks);
+            }
+            set {
+                ScheduleTicks = value.Ticks;
+            }
+        }
 
         public virtual List<AskedQuestion> AskedQuestions { get; set; }
 

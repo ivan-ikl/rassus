@@ -1,4 +1,5 @@
-﻿using Andacol.Core.Models;
+﻿using Andacol.Core.Extensions;
+using Andacol.Core.Models;
 using Andacol.Endpoint.Extensions;
 using Andacol.Endpoint.Models;
 using IKLSoftware.ODataHelpers.Attributes;
@@ -10,20 +11,20 @@ using System.Web.OData;
 namespace Andacol.Endpoint.Controllers
 {
 
-    [EntitySet(typeof(QuestionViewModel))]
+    [EntitySet(typeof(AskedQuestionViewModel))]
     public class QuestionsController : ODataController
     {
 
         private AndacolContext Db { get; } = new AndacolContext();
 
         [EnableQuery]
-        public IQueryable<QuestionViewModel> Get() => Db.AskedQuestions.ToList().AsQueryable().SelectViewModels();
+        public IQueryable<AskedQuestionViewModel> Get() => Db.AskedQuestions.WhereActive().ToList().AsQueryable().SelectViewModels();
 
         [EnableQuery]
         [ODataFunction]
-        [ODataReturnsCollectionFromEntitySet(typeof(QuestionViewModel))]
+        [ODataReturnsCollectionFromEntitySet(typeof(AskedQuestionViewModel))]
         [ODataParameter(typeof(string), "UserId")]
-        public IQueryable<QuestionViewModel> GetPending(string userId) => Db.AskedQuestions.WherePending(userId).ToList().AsQueryable().SelectViewModels();
+        public IQueryable<AskedQuestionViewModel> GetPending(string userId) => Db.AskedQuestions.WhereActive().WherePending(userId).ToList().AsQueryable().SelectViewModels();
 
         [HttpPost]
         [ODataAction]
@@ -39,7 +40,7 @@ namespace Andacol.Endpoint.Controllers
                 Db.SaveChanges();
             }
 
-            var question = Db.AskedQuestions.WherePending(userId).Include(q => q.Question).FirstOrDefault(q => q.Id == key);
+            var question = Db.AskedQuestions.WhereActive().WherePending(userId).Include(q => q.Question).FirstOrDefault(q => q.Id == key);
             if (user == null || question == null)
             {
                 return NotFound();
@@ -67,6 +68,11 @@ namespace Andacol.Endpoint.Controllers
 
             return Ok(true);
         }
+
+        [HttpGet]
+        [ODataFunction]
+        [ODataReturns(typeof(int))]
+        public IHttpActionResult QuestionsAsked() => Ok(AndacolScheduler.TimesScheduled);
 
     }
 }

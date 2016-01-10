@@ -9,5 +9,7 @@ namespace Andacol.Endpoint.Models
 
         public string Text { get; set; }
 
+        public long Votes { get; set; }
+
     }
 }

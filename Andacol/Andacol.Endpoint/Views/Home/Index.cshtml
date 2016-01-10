@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Andacol.Endpoint.Models.QuestionViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@(ViewBag.History == true ? "Povijest upitnika" : "Aktualni upitnici")</h2>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DateStarted)
+        </th>
+        @if (ViewBag.History == true)
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.DateExpired)
+            </th>
+        }
+        <th>
+            @Html.DisplayNameFor(model => model.Schedule)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QuestionText)
+        </th>
+        <th>
+            <div class="btn-group pull-right">
+                <a href="@Url.Action("Create")" class="btn btn-primary">Novi upitnik</a>
+                @if (ViewBag.History == true)
+                {
+                    <a href="@Url.Action("Index")" class="btn btn-default">Upitnici u tijeku</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("History")" class="btn btn-default">Završeni upitnici</a>
+                }
+            </div>
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateStarted)
+        </td>
+        @if (ViewBag.History == true)
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.DateExpired)
+            </td>
+        }
+        <td>
+            @Html.DisplayFor(modelItem => item.Schedule)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuestionText)
+        </td>
+        <td>
+            <div class="pull-right">
+                <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-sm btn-default">Pregled upitnika</a>
+            </div>
+        </td>
+    </tr>
+}
+
+</table>
