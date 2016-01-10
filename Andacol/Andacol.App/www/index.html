@@ -17,12 +17,24 @@
     <link href="css/index.css" rel="stylesheet" />
 </head>
 <body>
+    <header class="bar bar-nav">
+        <button class="btn pull-left">
+            Left
+        </button>
+        <button class="btn pull-right">
+            Right
+        </button>
+        <h1 class="title">Title</h1>
+    </header>
+    <br />
+    <br />
     <button onclick="location.href = 'proba.html';" id="myButton" class="float-left submit-button">Home</button>
     <p id="p1"></p>
+    <p id="p2">This phone's name is: </p>
     <script>
         document.addEventListener('deviceready', onDeviceReady, false);
         function onDeviceReady() {
-            navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
+            //navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
             console.log(navigator.notification);
             renderHomeView();
         }
@@ -34,7 +46,13 @@
               "<button class='search-btn'>Traži</button>";
             var element = document.getElementById("p1");
             element.innerHTML = html;
+
+            var element2 = document.getElementById("p2");
+            element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version ;
+        
         }
+
+
     </script>
    <!-- <script>
  $('.help-btn').on('click', function () {
