@@ -4,7 +4,7 @@
         var html =
           "<h1>Directory</h1>" +
           "<input class='search-key' type='search' placeholder='Enter name'/>" +
-          "<ul class='employee-list'></ul>";
+          "<button class='search-btn'>Traži</button>"
         $('body').html(html);
     }
 
@@ -18,15 +18,18 @@
     service.initialize().done(function () {
         renderHomeView();
     });
+    
     /* --------------------------------- Event Registration -------------------------------- 
     $('.search-key').on('keyup', findByName);
-    */
+    
     $('.help-btn').on('click', function() {
         alert("Employee Directory v3.4");
     });
+    */
     document.addEventListener('deviceready', onDeviceReady, false);
     function onDeviceReady() {
         console.log(navigator.notification);
+        renderHomeView();
     }
 
     /* ---------------------------------- Local Functions ---------------------------------- 
