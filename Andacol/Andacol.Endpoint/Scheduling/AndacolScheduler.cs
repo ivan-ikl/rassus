@@ -8,6 +8,8 @@ using System.Web;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
+using Microsoft.AspNet.SignalR;
+using Andacol.Endpoint.Hubs;
 
 [assembly: PreApplicationStartMethod(typeof(AndacolScheduler), "Start")]
 public static class AndacolScheduler
@@ -52,5 +54,13 @@ public static class AndacolScheduler
             }
         });
         db.SaveChanges();
+        DispatchQuestionUpdate();
     }
+
+    public static void DispatchQuestionUpdate()
+    {
+        var context = GlobalHost.ConnectionManager.GetHubContext<AndacolHub>();
+        context.Clients.All.questionsUpdated();
+    }
+
 }
