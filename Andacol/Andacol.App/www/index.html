@@ -41,13 +41,13 @@
         }
 
         function renderHomeView() {
-            
+
 
             var element2 = document.getElementById("p1");
             element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version;
-            
+
             var email1, id1;
-            function callback (email, id) {
+            function callback(email, id) {
                 //document.write (email + " " + id)
                 email1 = email;
                 id1 = id;
@@ -68,14 +68,17 @@
                 xmlHttp.send(null);
                 return xmlHttp.responseText;
             }
-        /*
-            var html =
-                  "<h1>Directory</h1>" +
-                  "<input class='search-key' type='search' placeholder='Enter name'/>";*/
+            /*
+                var html =
+                      "<h1>Directory</h1>" +
+                      "<input class='search-key' type='search' placeholder='Enter name'/>";*/
             var element = document.getElementById("p2");
-            
+
             obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
             element.innerHTML = obj["value"][0].QuestionText;
+
+            
+            //xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions(questionId)/Operations.SendAnswer", false)
         }
 
 
