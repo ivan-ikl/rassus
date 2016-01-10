@@ -28,7 +28,8 @@
     </header>
     <br />
     <br />
-    <button onclick="location.href = 'proba.html';" id="myButton" class="float-left submit-button">Home</button>
+    <br />
+    <!--<button onclick="location.href = 'proba.html';" id="myButton" class="float-left submit-button">Home</button>-->
     <p id="p1"></p>
     <p id="p2">This phone's name is: </p>
     <script>
@@ -40,16 +41,41 @@
         }
 
         function renderHomeView() {
-            var html =
-              "<h1>Directory</h1>" +
-              "<input class='search-key' type='search' placeholder='Enter name'/>" +
-              "<button class='search-btn'>Traži</button>";
-            var element = document.getElementById("p1");
-            element.innerHTML = html;
+            
 
-            var element2 = document.getElementById("p2");
-            element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version ;
-        
+            var element2 = document.getElementById("p1");
+            element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version;
+            
+            var email1, id1;
+            function callback (email, id) {
+                //document.write (email + " " + id)
+                email1 = email;
+                id1 = id;
+            };
+            /*
+            chrome.runtime.setManifest({
+                oauth2: {
+                    client_id: '355127971769-m0k8crlbl03ma2kecvcuclkn0vo0gcgr.apps.googleusercontent.com',
+                    scopes: ['SCOPE_1', 'SCOPE_2', 'SCOPE_3']
+                }
+            });
+            
+            chrome.identity.getProfileUserInfo(callback)
+            */
+            function httpGet(theUrl) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", theUrl, false); // false for synchronous request
+                xmlHttp.send(null);
+                return xmlHttp.responseText;
+            }
+        /*
+            var html =
+                  "<h1>Directory</h1>" +
+                  "<input class='search-key' type='search' placeholder='Enter name'/>";*/
+            var element = document.getElementById("p2");
+            
+            obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
+            element.innerHTML = obj["value"][0].QuestionText;
         }
 
 
