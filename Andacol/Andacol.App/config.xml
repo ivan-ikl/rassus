@@ -75,14 +75,14 @@
     <icon src="res/icons/wp8/Background.png" width="173" height="173" />
   </platform>
   <platform name="android">
-    <splash src="res/screens/android/screen-hdpi-landscape.png" density="land-hdpi" />
-    <splash src="res/screens/android/screen-ldpi-landscape.png" density="land-ldpi" />
-    <splash src="res/screens/android/screen-mdpi-landscape.png" density="land-mdpi" />
-    <splash src="res/screens/android/screen-xhdpi-landscape.png" density="land-xhdpi" />
-    <splash src="res/screens/android/screen-hdpi-portrait.png" density="port-hdpi" />
-    <splash src="res/screens/android/screen-ldpi-portrait.png" density="port-ldpi" />
-    <splash src="res/screens/android/screen-mdpi-portrait.png" density="port-mdpi" />
-    <splash src="res/screens/android/screen-xhdpi-portrait.png" density="port-xhdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="land-hdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="land-ldpi" />
+    <splash src="res/screens/Andacol-splash.png" density="land-mdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="land-xhdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="port-hdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="port-ldpi" />
+    <splash src="res/screens/Andacol-splash.png" density="port-mdpi" />
+    <splash src="res/screens/Andacol-splash.png" density="port-xhdpi" />
   </platform>
   <platform name="ios">
     <splash src="res/screens/ios/screen-iphone-portrait.png" width="320" height="480" />
