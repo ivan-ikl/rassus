@@ -9,28 +9,26 @@
     -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
     <title>Andacol.App</title>
+    
+    <link href="css/ratchet.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
 
     <!-- Andacol.App references -->
     <link href="css/index.css" rel="stylesheet" />
 </head>
 <body>
+    <script>
+ $('.help-btn').on('click', function () {
+     navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
+    })
+    </script>
     <p>Hello, your application is ready!</p>
     <p>
         <button class="help-btn">Help</button>
     </p>
     <label id="label1"> Ovo je neki tekst!</label>
-    <script> $('.help-btn').on('click', function () {
-     function alertDismissed() {
-     }
-
-     navigator.notification.alert(
-         'You are the winner!',  // message
-         alertDismissed,         // callback
-         'Game Over',            // title
-         'Done'                  // buttonName
-     );
-     });
-    </script>
+    
+    <!--
     <script>
         module.run(function ($cordovaPush) {
 
@@ -84,6 +82,7 @@
             cordova.plugins.backgroundMode.enable();
         }, false);
     </script>
+        -->
     <button type="button"
             onclick="navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');">
         Click me to display Date and Time.
@@ -92,6 +91,7 @@
     <p id="demo"></p>
 
     <!-- Cordova reference, this is added to your app when it's built. -->
+    <script src="scripts/handlebars.js"></script>
     <script src="cordova.js"></script>
     <script src="scripts/platformOverrides.js"></script>
     <script src="scripts/app.js"></script>
