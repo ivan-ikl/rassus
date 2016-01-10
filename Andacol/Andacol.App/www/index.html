@@ -71,14 +71,22 @@
             /*
                 var html =
                       "<h1>Directory</h1>" +
-                      "<input class='search-key' type='search' placeholder='Enter name'/>";*/
+                      "<input class='search-key' type='search' placeholder='Enter name'/>";
+        */
             var element = document.getElementById("p2");
 
             obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
             element.innerHTML = obj["value"][0].QuestionText;
 
-            
-            //xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions(questionId)/Operations.SendAnswer", false)
+            /*
+            xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions(questionId)/Operations.SendAnswer", true)
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send("{UserId:'',Answer:1}");
+        */
+
+            function renderQuestion(id) {
+
+}
         }
 
 
@@ -162,5 +170,8 @@
     <script src="scripts/platformOverrides.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/index.js"></script>
+    <script src="scripts/jquery-2.1.4.min.js"></script>
+    <script src="scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="scripts/AndacolHubs.js"></script>
 </body>
 </html>
