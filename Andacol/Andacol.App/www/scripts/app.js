@@ -28,6 +28,7 @@
     */
     document.addEventListener('deviceready', onDeviceReady, false);
     function onDeviceReady() {
+        navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
         console.log(navigator.notification);
         renderHomeView();
     }
