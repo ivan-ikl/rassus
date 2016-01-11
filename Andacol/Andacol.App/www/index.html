@@ -42,7 +42,7 @@
             var obj;
 
             function onDeviceReady() {
-                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid + '6' + "')?$expand=Options"));
+                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid + '7' + "')?$expand=Options"));
                 if (obj["value"].length > 0) {
                     var html = '<h2>New questions are available!</h2><br /><button class="btn btn-positive btn-block" onclick="renderQuestion(0)">Start!</button><br /><button class="btn btn-negative btn-block" onclick="navigator.app.exitApp()">Or maybe later...</button>';
                     var elementP2 = document.getElementById("p2");
@@ -121,7 +121,7 @@
                 };
                 xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
                 xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.send("{ UserId : '" + device.uuid+'6' + "', Answer :" + answerId + " }");
+                xhttp.send("{ UserId : '" + device.uuid+'7' + "', Answer :" + answerId + " }");
                 
             }
 
@@ -165,6 +165,8 @@
                 var elementTable1 = document.getElementById("table1");
                 elementTable1.innerHTML = "";
                 cordova.plugins.backgroundMode.disable();
+                var elementTable1 = document.getElementById("bar2");
+                elementBar2.innerHTML = "";
             }
 
             function renderBadges(questionNum) {
