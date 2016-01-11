@@ -59,6 +59,10 @@
     <Compile Include="Migrations\201601081323597_Initial.Designer.cs">
       <DependentUpon>201601081323597_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601100916188_ScheduleTicks.cs" />
+    <Compile Include="Migrations\201601100916188_ScheduleTicks.Designer.cs">
+      <DependentUpon>201601100916188_ScheduleTicks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AndacolContext.cs" />
     <Compile Include="Models\User.cs" />
@@ -75,6 +79,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201601081323597_Initial.resx">
       <DependentUpon>201601081323597_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601100916188_ScheduleTicks.resx">
+      <DependentUpon>201601100916188_ScheduleTicks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

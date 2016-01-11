@@ -1,0 +1,234 @@
+﻿@model Andacol.Endpoint.Models.QuestionViewModel
+
+@{
+    ViewBag.Title = "Question";
+    var history = (Model?.DateExpired ?? DateTime.MaxValue) < DateTime.UtcNow;
+    var scoreQuestion = Model?.QuestionType == Andacol.Endpoint.Models.QuestionType.ScoreQuestion;
+}
+
+<h2>@(Model == null ? "Novo pitanje" : "Stanje upitnika")</h2>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" ng-app="andacolApp" ng-controller="questionController">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        @if (Model != null)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateStarted, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.DateStarted, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            if (history)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DateExpired, htmlAttributes: new { @class = "col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.DateExpired, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Schedule, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.Schedule, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionText, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.QuestionText, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionType, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @if (Model.QuestionType == Andacol.Endpoint.Models.QuestionType.OptionalQuestion)
+                    {
+                        <span>Pitanje s ponuđenim odgovorima</span>
+                    }
+                    else
+                    {
+                        <span>Pitanje s ocjenom</span>
+                    }
+                </div>
+            </div>
+
+            if (scoreQuestion)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Min, htmlAttributes: new { @class = "col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.Min, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Max, htmlAttributes: new { @class = "col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.Max, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ocjena</th>
+                            <th>Broj dobivenih glasova</th>
+                            <th class="text-right">% glasova</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ 
+                            var Total = Model.Scores?.Sum(s => s.Count) ?? 1;
+                        }
+                        @foreach (var score in Model.Scores.OrderByDescending(s => s.Count))
+                        {
+                            <tr>
+                                <td>@score.Option</td>
+                                <td>@score.Count</td>
+                                <td class="text-right">@($"{score.Count / Total:P2}")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        else
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Schedule, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    <select name="Schedule" class="form-control">
+                        <option selected value="6:00:00">4x dnevno</option>
+                        <option selected value="12:00:00">2x dnevno</option>
+                        <option selected value="1.00:00:00">Svaki dan</option>
+                        <option selected value="2.00:00:00">Svaki drugi dan</option>
+                        <option selected value="7.00:00:00">Svaki tjedan</option>
+                    </select>
+                    @Html.ValidationMessageFor(model => model.Schedule, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionText, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.QuestionText, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QuestionText, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.QuestionType, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    <select name="QuestionType" ng-model="questionType" class="form-control">
+                        <option value="OptionalQuestion">Pitanje s ponuđenim odgovorima</option>
+                        <option value="ScoreQuestion">Pitanje s ocjenom</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" ng-show="(questionType == 'ScoreQuestion')">
+                @Html.LabelFor(model => model.Min, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Min, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Min, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group" ng-show="(questionType == 'ScoreQuestion')">
+                @Html.LabelFor(model => model.Max, htmlAttributes: new { @class = "col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Max, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Max, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        <div class="form-group" ng-show="(questionType == 'OptionalQuestion')">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Ponuđeni odgovori</th>
+                        <th>@(Model == null ? "" : "Broj glasova")</th>
+                    </tr>
+                </thead>
+                @if (Model == null)
+                {
+                    <tbody>
+                        <tr ng-repeat="option in options">
+                            <td>
+                                <input type="text" name="option_{{$index}}" class="form-control" ng-model="option"/>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-default" ng-click="deleteOption($index)">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    <span>Izbriši</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <input type="text" name="new_option" ng-model="newOption" class="form-control"/>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-default" ng-click="addOption()" ng-disabled="!newOption || !isUnique()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    <span>Dodaj</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                } else if (Model.QuestionType == Andacol.Endpoint.Models.QuestionType.OptionalQuestion && Model.Options != null)
+                {
+                    <tbody>
+                        @foreach(var option in Model.Options)
+                        {
+                            <tr>
+                                <td>@option.Text</td>
+                                <td>@option.Votes</td>
+                            </tr>
+                        }
+                    </tbody>
+                }
+            </table>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10 btn-group">
+                <div class="btn-group pull-right">
+                    @if (Model == null)
+                    {
+                        <input type="submit" value="Pokreni upitnik" class="btn btn-primary" />
+                    }
+                    else if (!history)
+                    {
+                        <input type="submit" value="Završi upitnik" class="btn btn-primary" />
+                    }
+                    <a href="@Url.Action("Index")" class="btn btn-default">Natrag</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var QuestionType = "@(Model == null ? "" : @Model.QuestionType.ToString())";
+</script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/angular.min.js"></script>
+<script src="~/Js/QuestionController.js"></script>
