@@ -38,6 +38,7 @@
         <script>
             document.addEventListener('deviceready', onDeviceReady, false);
             document.addEventListener("offline", noQuestions, false);
+            document.addEventListener("online", onDeviceReady, false);
             var obj;
 
             function onDeviceReady() {
@@ -47,7 +48,7 @@
                     var elementP2 = document.getElementById("p2");
                     elementP2.innerHTML = html;
                     var elementTable1 = document.getElementById("table1");
-                    elementP2.innerHTML = "";
+                    elementTable1.innerHTML = "";
                 }
                 else {
                     noQuestions();
