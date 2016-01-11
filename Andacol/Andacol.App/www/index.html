@@ -30,7 +30,6 @@
         <button class="btn btn-block" onclick="renderQuestion(0)">Start!</button>
     </div>
     <ul class="table-view" id="table1"></ul>
-   
     <div id="bar2" class="bar bar-standard bar-footer"></div>
         <script>
             document.addEventListener('deviceready', onDeviceReady, false);
@@ -38,7 +37,7 @@
             function onDeviceReady() {
                 //navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
                 //console.log(navigator.notification);
-                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
+                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='"+device.uuid+"')?$expand=Options"));
                 cordova.plugins.backgroundMode.enable();
                 renderHomeView();
                 navigator.splashscreen.hide();
@@ -87,12 +86,12 @@
                // element.innerHTML += renderQuestion(1, obj);
             
             function questionAnswered(questionNum, questionId, answerId) {
-                sendAnswer(questionId, answerId);
-                renderQuestion(questionNum + 1)
+                //sendAnswer(questionId, answerId);
+                renderQuestion(questionNum + 1);
             }
 
             function sendAnswer(questionId, answerId) {
-                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
+                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", false)
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.send("{UserId: '"+device.uuid+"',Answer:"+answerId+"}");
             }
@@ -101,22 +100,30 @@
                 var html="", index;
                 var element = document.getElementById("p2");
                 element.innerHTML = "<h2>" + obj["value"][questionNum]["QuestionText"] + "</h2>";
-                if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion")
-                {
+                if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion") {
                     for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
-                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value']['Options'][index]["Text"] + '</a></li>';
+                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
+                        //html += '<li class="table-view-cell"><a class="navigate-right">' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
                     }
                 }
-                else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion")
-                { }
-                else
-                { }
+                else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion") {
+                    for (index = obj['value'][questionNum]['Min']; index <= obj['value'][questionNum]['Max']; index++) {
+                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + index + ')"><a class="navigate-right" >' + index+ '</a></li>';
+                    }
+                }
+                else {
+                    noQuestions();
+                }
                 var element = document.getElementById("table1");
                 element.innerHTML = html;
                 //html += '<div id="bar2" class="bar bar-standard bar-footer">' + renderBadges(questionNum, obj["value"].length) + '</div>';
                 var element = document.getElementById("bar2");
                 element.innerHTML = renderBadges(questionNum);
             }
+
+            function noQuestions() {
+
+}
 
             function renderBadges(questionNum) {
                 var html = '', index;
