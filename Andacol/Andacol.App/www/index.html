@@ -43,6 +43,7 @@
 
             function onDeviceReady() {
                 obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid + '7' + "')?$expand=Options"));
+                var client = new AndacolClient();
                 if (obj["value"].length > 0) {
                     var html = '<h2>New questions are available!</h2><br /><button class="btn btn-positive btn-block" onclick="renderQuestion(0)">Start!</button><br /><button class="btn btn-negative btn-block" onclick="navigator.app.exitApp()">Or maybe later...</button>';
                     var elementP2 = document.getElementById("p2");
