@@ -27,17 +27,25 @@
     <p id="p1"></p>
     <div class="content-padded" id="p2">
         <h2>New questions are available!</h2>
-        <button class="btn btn-block" onclick="renderQuestion(0)">Start!</button>
+        <br />
+        <button class="btn btn-positive btn-block" onclick="renderQuestion(0)">Start!</button>
+        <br />
+        <button class="btn btn-negative btn-block" onclick="navigator.app.exitApp()">Or maybe later...</button>
     </div>
     <ul class="table-view" id="table1"></ul>
     <div id="bar2" class="bar bar-standard bar-footer"></div>
         <script>
             document.addEventListener('deviceready', onDeviceReady, false);
+            document.addEventListener("offline", noQuestions, false);
             var obj;
+
             function onDeviceReady() {
-                //navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
-                //console.log(navigator.notification);
-                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='"+device.uuid+"')?$expand=Options"));
+                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid+'2' + "')?$expand=Options"));
+                cordova.plugins.backgroundMode.setDefaults({
+                    title: 'Andacol',
+                    ticker: 'Continued in background',
+                    text: 'Working for you'
+                });
                 cordova.plugins.backgroundMode.enable();
                 renderHomeView();
                 navigator.splashscreen.hide();
@@ -86,20 +94,32 @@
                // element.innerHTML += renderQuestion(1, obj);
             
             function questionAnswered(questionNum, questionId, answerId) {
-                //sendAnswer(questionId, answerId);
+                sendAnswer(questionId, answerId);
                 renderQuestion(questionNum + 1);
             }
 
             function sendAnswer(questionId, answerId) {
-                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", false)
+                var xhttp = new XMLHttpRequest();
+                
+                xhttp.onreadystatechange = function () {
+                    //document.getElementById("demo").innerHTML = xhttp.responseText;
+                    if (xhttp.status != 200) {
+                        navigator.notification.alert("Error "+xhttp.status+", something went wrong!\n" + xhttp.responseText, null, 'Oops!', 'OK');
+                    }
+                };
+                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
                 xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.send("{UserId: '"+device.uuid+"',Answer:"+answerId+"}");
+                xhttp.send("{ UserId : '" + device.uuid+'2' + "', Answer :" + answerId + " }");
+                
             }
 
             function renderQuestion(questionNum) {
                 var html="", index;
                 var element = document.getElementById("p2");
                 element.innerHTML = "<h2>" + obj["value"][questionNum]["QuestionText"] + "</h2>";
+                if (questionNum >= obj["value"].length) {
+                    noQuestions();
+                }
                 if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion") {
                     for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
                         html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
@@ -122,8 +142,12 @@
             }
 
             function noQuestions() {
-
-}
+                var html = '<h2>No more questions for now!</h2><br /><button class="btn btn-positive btn-block" onclick="navigator.app.exitApp()">Yay!</button>';
+                var elementP2 = document.getElementById("p2");
+                elementP2.innerHTML = html;
+                var elementTable1 = document.getElementById("table1");
+                elementTable1.innerHTML = "";
+            }
 
             function renderBadges(questionNum) {
                 var html = '', index;
@@ -217,8 +241,8 @@
         <!-- Cordova reference, this is added to your app when it's built. -->
         <script src="scripts/handlebars.js"></script>
         <script src="cordova.js"></script>
-        <script src="scripts/platformOverrides.js"></script>
-        <script src="scripts/index.js"></script>
+        <!--<script src="scripts/platformOverrides.js"></script>
+        <script src="scripts/index.js"></script>-->
         <script src="scripts/jquery-2.1.4.min.js"></script>
         <script src="scripts/jquery.signalR-2.2.0.min.js"></script>
         <script src="scripts/AndacolHubs.js"></script>
