@@ -19,6 +19,7 @@
 <body>
     <header class="bar bar-nav">
         <h1 class="title">Andacol</h1>
+        <a class="icon icon-refresh pull-right" onclick="onDeviceReady()"></a>
     </header>
     <br />
     <br />
@@ -40,7 +41,17 @@
             var obj;
 
             function onDeviceReady() {
-                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid+'2' + "')?$expand=Options"));
+                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='" + device.uuid + '6' + "')?$expand=Options"));
+                if (obj["value"].length > 0) {
+                    var html = '<h2>New questions are available!</h2><br /><button class="btn btn-positive btn-block" onclick="renderQuestion(0)">Start!</button><br /><button class="btn btn-negative btn-block" onclick="navigator.app.exitApp()">Or maybe later...</button>';
+                    var elementP2 = document.getElementById("p2");
+                    elementP2.innerHTML = html;
+                    var elementTable1 = document.getElementById("table1");
+                    elementP2.innerHTML = "";
+                }
+                else {
+                    noQuestions();
+                }
                 cordova.plugins.backgroundMode.setDefaults({
                     title: 'Andacol',
                     ticker: 'Continued in background',
@@ -109,36 +120,41 @@
                 };
                 xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
                 xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.send("{ UserId : '" + device.uuid+'2' + "', Answer :" + answerId + " }");
+                xhttp.send("{ UserId : '" + device.uuid+'6' + "', Answer :" + answerId + " }");
                 
             }
 
             function renderQuestion(questionNum) {
-                var html="", index;
-                var element = document.getElementById("p2");
-                element.innerHTML = "<h2>" + obj["value"][questionNum]["QuestionText"] + "</h2>";
+                var html = "", index;
                 if (questionNum >= obj["value"].length) {
                     noQuestions();
                 }
-                if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion") {
-                    for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
-                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
-                        //html += '<li class="table-view-cell"><a class="navigate-right">' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
-                    }
-                }
-                else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion") {
-                    for (index = obj['value'][questionNum]['Min']; index <= obj['value'][questionNum]['Max']; index++) {
-                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + index + ')"><a class="navigate-right" >' + index+ '</a></li>';
-                    }
-                }
                 else {
-                    noQuestions();
+                    var element = document.getElementById("p2");
+                    element.innerHTML = "<h2>" + obj["value"][questionNum]["QuestionText"] + "</h2>";
+                    if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion") {
+                        for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
+                            html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
+                            //html += '<li class="table-view-cell"><a class="navigate-right">' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
+                        }
+                        var element = document.getElementById("table1");
+                        element.innerHTML = html;
+                        var element = document.getElementById("bar2");
+                        element.innerHTML = renderBadges(questionNum);
+                    }
+                    else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion") {
+                        for (index = obj['value'][questionNum]['Min']; index <= obj['value'][questionNum]['Max']; index++) {
+                            html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + index + ')"><a class="navigate-right" >' + index + '</a></li>';
+                        }
+                        var element = document.getElementById("table1");
+                        element.innerHTML = html;
+                        var element = document.getElementById("bar2");
+                        element.innerHTML = renderBadges(questionNum);
+                    }
+                    else {
+                        noQuestions();
+                    }
                 }
-                var element = document.getElementById("table1");
-                element.innerHTML = html;
-                //html += '<div id="bar2" class="bar bar-standard bar-footer">' + renderBadges(questionNum, obj["value"].length) + '</div>';
-                var element = document.getElementById("bar2");
-                element.innerHTML = renderBadges(questionNum);
             }
 
             function noQuestions() {
@@ -147,6 +163,7 @@
                 elementP2.innerHTML = html;
                 var elementTable1 = document.getElementById("table1");
                 elementTable1.innerHTML = "";
+                cordova.plugins.backgroundMode.disable();
             }
 
             function renderBadges(questionNum) {
