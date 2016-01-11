@@ -2,18 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8" />
-
-    <!--
-        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
-        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
-    -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-    <title>Andacol.App</title>
-    
+    <title>Andacol</title>
     <link href="css/ratchet.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
-
-    <!-- Andacol.App references -->
     <link href="css/index.css" rel="stylesheet" />
 </head>
 <body>
@@ -24,7 +16,6 @@
     <br />
     <br />
     <br />
-    <!--<button onclick="location.href = 'proba.html';" id="myButton" class="float-left submit-button">Home</button>-->
     <p id="p1"></p>
     <div class="content-padded" id="p2">
         <h2>New questions are available!</h2>
@@ -35,6 +26,7 @@
     </div>
     <ul class="table-view" id="table1"></ul>
     <div id="bar2" class="bar bar-standard bar-footer"></div>
+
         <script>
             document.addEventListener('deviceready', onDeviceReady, false);
             document.addEventListener("offline", noQuestions, false);
@@ -66,46 +58,16 @@
 
             function httpGet(theUrl) {
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET", theUrl, false); // false for synchronous request
+                xmlHttp.open("GET", theUrl, false); 
                 xmlHttp.send(null);
                 return xmlHttp.responseText;
             }
 
             function renderHomeView() {
-                //var element2 = document.getElementById("p2");
-                //element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version;
-
-                var email1, id1;
-                function callback(email, id) {
-                    //document.write (email + " " + id)
-                    email1 = email;
-                    id1 = id;
-                }
-                
                 var element = document.getElementById("bar2");
                 element.innerHTML = renderBadges(-1, obj["value"].length);
             }
-                /*
-                chrome.runtime.setManifest({
-                    oauth2: {
-                        client_id: '355127971769-m0k8crlbl03ma2kecvcuclkn0vo0gcgr.apps.googleusercontent.com',
-                        scopes: ['SCOPE_1', 'SCOPE_2', 'SCOPE_3']
-                    }
-                });
-
-                chrome.identity.getProfileUserInfo(callback)
-                */
-                
-                
-                /*
-                    var html =
-                          "<h1>Directory</h1>" +
-                          "<input class='search-key' type='search' placeholder='Enter name'/>";
-            */
-                           
-              //  var element = document.getElementById("p");
-               // element.innerHTML += renderQuestion(1, obj);
-            
+                   
             function questionAnswered(questionNum, questionId, answerId) {
                 sendAnswer(questionId, answerId);
                 renderQuestion(questionNum + 1);
@@ -123,7 +85,6 @@
                 xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.send("{ UserId : '" + device.uuid+'7' + "', Answer :" + answerId + " }");
-                
             }
 
             function renderQuestion(questionNum) {
@@ -137,7 +98,6 @@
                     if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion") {
                         for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
                             html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
-                            //html += '<li class="table-view-cell"><a class="navigate-right">' + obj['value'][questionNum]['Options'][index]["Text"] + '</a></li>';
                         }
                         var element = document.getElementById("table1");
                         element.innerHTML = html;
@@ -186,84 +146,9 @@
             }
 
         </script>
-        <!-- <script>
-         $('.help-btn').on('click', function () {
-             navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
-            })
-            </script>
-            <p>Hello, your application is ready!</p>
-            <p>
-                <button class="help-btn">Help</button>
-            </p>
-            <label id="label1"> Ovo je neki tekst!</label>
-
-
-            <script>
-                module.run(function ($cordovaPush) {
-
-                    var androidConfig = {
-                        "senderID": "replace_with_sender_id",
-                    };
-
-                    document.addEventListener("deviceready", function () {
-                        $cordovaPush.register(androidConfig).then(function (result) {
-                            // Success
-                        }, function (err) {
-                            // Error
-                        })
-
-                        $rootScope.$on('$cordovaPush:notificationReceived', function (event, notification) {
-                            switch (notification.event) {
-                                case 'registered':
-                                    if (notification.regid.length > 0) {
-                                        alert('registration ID = ' + notification.regid);
-                                    }
-                                    break;
-
-                                case 'message':
-                                    // this is the actual push notification. its format depends on the data model from the push server
-                                    alert('message = ' + notification.message + ' msgCount = ' + notification.msgcnt);
-                                    break;
-
-                                case 'error':
-                                    alert('GCM error = ' + notification.msg);
-                                    break;
-
-                                default:
-                                    alert('An unknown GCM event has occurred');
-                                    break;
-                            }
-                        });
-
-
-                        // WARNING: dangerous to unregister (results in loss of tokenID)
-                        $cordovaPush.unregister(options).then(function (result) {
-                            // Success!
-                        }, function (err) {
-                            // Error
-                        })
-
-                    }, false);
-                });
-
-                document.addEventListener('deviceready', function () {
-                    // cordova.plugins.backgroundMode is now available
-                    cordova.plugins.backgroundMode.enable();
-                }, false);
-            </script>
-
-            <button type="button"
-                    onclick="navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');">
-                Click me to display Date and Time.
-            </button>
-
-            <p id="demo"></p>
-        -->
         <!-- Cordova reference, this is added to your app when it's built. -->
         <script src="scripts/handlebars.js"></script>
         <script src="cordova.js"></script>
-        <!--<script src="scripts/platformOverrides.js"></script>
-        <script src="scripts/index.js"></script>-->
         <script src="scripts/jquery-2.1.4.min.js"></script>
         <script src="scripts/jquery.signalR-2.2.0.min.js"></script>
         <script src="scripts/AndacolHubs.js"></script>
