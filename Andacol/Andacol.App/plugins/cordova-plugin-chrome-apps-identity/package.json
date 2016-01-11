@@ -1,0 +1,72 @@
+{
+  "name": "cordova-plugin-chrome-apps-identity",
+  "version": "1.4.5",
+  "description": "This plugin provides OAuth2 authentication for Android and iOS.",
+  "cordova": {
+    "id": "cordova-plugin-chrome-apps-identity",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-identity.git"
+  },
+  "keywords": [
+    "chrome",
+    "identity",
+    "OAuth",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova-android",
+      "version": ">=4"
+    }
+  ],
+  "author": "",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-identity/issues"
+  },
+  "homepage": "https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-identity",
+  "gitHead": "4ce371b8c7ba948242404157c3da47c189a29d83",
+  "_id": "cordova-plugin-chrome-apps-identity@1.4.5",
+  "scripts": {},
+  "_shasum": "4e1e6222da68ca269f3b0fee3f125a24fc7cff1a",
+  "_from": "cordova-plugin-chrome-apps-identity@*",
+  "_npmVersion": "2.1.18",
+  "_nodeVersion": "0.10.29",
+  "_npmUser": {
+    "name": "agrieve",
+    "email": "agrieve@chromium.org"
+  },
+  "maintainers": [
+    {
+      "name": "agrieve",
+      "email": "agrieve@chromium.org"
+    },
+    {
+      "name": "mmocny",
+      "email": "mmocny@gmail.com"
+    },
+    {
+      "name": "maxw",
+      "email": "maxw@chromium.org"
+    },
+    {
+      "name": "clelland",
+      "email": "iclelland@google.com"
+    }
+  ],
+  "dist": {
+    "shasum": "4e1e6222da68ca269f3b0fee3f125a24fc7cff1a",
+    "tarball": "http://registry.npmjs.org/cordova-plugin-chrome-apps-identity/-/cordova-plugin-chrome-apps-identity-1.4.5.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-chrome-apps-identity/-/cordova-plugin-chrome-apps-identity-1.4.5.tgz",
+  "readme": "ERROR: No README data found!"
+}
