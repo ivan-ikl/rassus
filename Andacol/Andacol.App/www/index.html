@@ -27,28 +27,44 @@
     <p id="p1"></p>
     <div class="content-padded" id="p2">
         <h2>New questions are available!</h2>
-        <button class="btn btn-block">Start!</button>
+        <button class="btn btn-block" onclick="renderQuestion(0)">Start!</button>
     </div>
     <ul class="table-view" id="table1"></ul>
+   
     <div id="bar2" class="bar bar-standard bar-footer"></div>
         <script>
             document.addEventListener('deviceready', onDeviceReady, false);
+            var obj;
             function onDeviceReady() {
                 //navigator.notification.alert(5 + 6, null, 'Game Over', 'Done');
                 //console.log(navigator.notification);
+                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
+                cordova.plugins.backgroundMode.enable();
                 renderHomeView();
+                navigator.splashscreen.hide();
+            }
+
+            function httpGet(theUrl) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", theUrl, false); // false for synchronous request
+                xmlHttp.send(null);
+                return xmlHttp.responseText;
             }
 
             function renderHomeView() {
                 //var element2 = document.getElementById("p2");
                 //element2.innerHTML += window.device.uuid + " " + device.model + " " + device.platform + " " + device.version;
-                
+
                 var email1, id1;
                 function callback(email, id) {
                     //document.write (email + " " + id)
                     email1 = email;
                     id1 = id;
-                };
+                }
+                
+                var element = document.getElementById("bar2");
+                element.innerHTML = renderBadges(-1, obj["value"].length);
+            }
                 /*
                 chrome.runtime.setManifest({
                     oauth2: {
@@ -59,59 +75,63 @@
 
                 chrome.identity.getProfileUserInfo(callback)
                 */
-                function httpGet(theUrl) {
-                    var xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open("GET", theUrl, false); // false for synchronous request
-                    xmlHttp.send(null);
-                    return xmlHttp.responseText;
-                }
+                
+                
                 /*
                     var html =
                           "<h1>Directory</h1>" +
                           "<input class='search-key' type='search' placeholder='Enter name'/>";
             */
-
-
-                obj = JSON.parse(httpGet("http://andacol.azurewebsites.net/odata/Questions/Operations.GetPending(UserId='userIdentifier1')?$expand=Options"));
-                //element.innerHTML = obj["value"][0].QuestionText;
-
-                /*
-                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions(questionId)/Operations.SendAnswer", true)
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.send("{UserId:'',Answer:1}");
-            */
-
-                function renderQuestion(questionNum, obj) {
-                    var html, index;
-                    if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion")
-                    { }
-                    else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion")
-                    { }
-                    else
-                    { }
-                    //html += '<div id="bar2" class="bar bar-standard bar-footer">' + renderBadges(questionNum, obj["value"].length) + '</div>';
-                    var element = document.getElementById("bar2");
-                    element.innerHTML = renderBadges(questionNum, obj["value"].length);
-                    return html;
-                }
-
-                function renderBadges(questionNum, totalNum) {
-                    var html = '', index;
-                    for (index = 1; index < totalNum + 1; index++) {
-                        if (questionNum == index) {
-                            html += '<span class="badge">';
-                        }
-                        if (questionNum != index) {
-                            html += '<span class="badge badge-inverted">';
-                        }
-                        html += index + '</span>';
-                    }
-                    return html;
-                }
-                var element = document.getElementById("p");
-                element.innerHTML += renderQuestion(1, obj);
+                           
+              //  var element = document.getElementById("p");
+               // element.innerHTML += renderQuestion(1, obj);
+            
+            function questionAnswered(questionNum, questionId, answerId) {
+                sendAnswer(questionId, answerId);
+                renderQuestion(questionNum + 1)
             }
 
+            function sendAnswer(questionId, answerId) {
+                xhttp.open("POST", "http://andacol.azurewebsites.net/odata/Questions("+questionId+")/Operations.SendAnswer", true)
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send("{UserId: '"+device.uuid+"',Answer:"+answerId+"}");
+            }
+
+            function renderQuestion(questionNum) {
+                var html="", index;
+                var element = document.getElementById("p2");
+                element.innerHTML = "<h2>" + obj["value"][questionNum]["QuestionText"] + "</h2>";
+                if (obj["value"][questionNum]["QuestionType"] == "OptionalQuestion")
+                {
+                    for (index = 0; index < obj['value'][questionNum]['Options'].length; index++) {
+                        html += '<li class="table-view-cell" onClick="questionAnswered(' + questionNum + ',' + obj["value"][questionNum]["Id"] + ',' + obj["value"][questionNum]["Options"][index]["Id"] + ')"><a class="navigate-right" >' + obj['value']['Options'][index]["Text"] + '</a></li>';
+                    }
+                }
+                else if (obj["value"][questionNum]["QuestionType"] == "ScoreQuestion")
+                { }
+                else
+                { }
+                var element = document.getElementById("table1");
+                element.innerHTML = html;
+                //html += '<div id="bar2" class="bar bar-standard bar-footer">' + renderBadges(questionNum, obj["value"].length) + '</div>';
+                var element = document.getElementById("bar2");
+                element.innerHTML = renderBadges(questionNum);
+            }
+
+            function renderBadges(questionNum) {
+                var html = '', index;
+                questionNum++;
+                for (index = 1; index <  obj["value"].length + 1; index++) {
+                    if (questionNum == index) {
+                        html += '<span class="badge">';
+                    }
+                    if (questionNum != index) {
+                        html += '<span class="badge badge-inverted">';
+                    }
+                    html += index + '</span>';
+                }
+                return html;
+            }
 
         </script>
         <!-- <script>
