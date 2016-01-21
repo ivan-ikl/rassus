@@ -7,7 +7,6 @@ using System.Threading;
 using System.Web;
 using System.Diagnostics;
 using System.Linq;
-using System.Web.Http;
 using Microsoft.AspNet.SignalR;
 using Andacol.Endpoint.Hubs;
 
@@ -59,8 +58,13 @@ public static class AndacolScheduler
 
     public static void DispatchQuestionUpdate()
     {
-        var context = GlobalHost.ConnectionManager.GetHubContext<AndacolHub>();
-        context.Clients.All.questionsUpdated();
+        try {
+            var context = GlobalHost.ConnectionManager.GetHubContext<AndacolHub>();
+            context.Clients.All.questionsUpdated();
+        } catch (Exception ex)
+        {
+            Debug.Print(ex.Message);
+        }
     }
 
 }
