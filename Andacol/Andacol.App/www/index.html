@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: http://andacol.azurewebsites.net/ 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
     <title>Andacol</title>
     <link href="css/ratchet.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
@@ -120,14 +120,19 @@
             }
 
             function noQuestions() {
-                var html = '<h2>No more questions for now!</h2><br /><button class="btn btn-positive btn-block" onclick="navigator.app.exitApp()">Yay!</button>';
-                var elementP2 = document.getElementById("p2");
-                elementP2.innerHTML = html;
-                var elementTable1 = document.getElementById("table1");
-                elementTable1.innerHTML = "";
-                cordova.plugins.backgroundMode.disable();
-                var elementTable1 = document.getElementById("bar2");
-                elementBar2.innerHTML = "";
+                if (NewQuestionsAvailable) {
+                    // Restart
+                    onDeviceReady();
+                } else {
+                    var html = '<h2>No more questions for now!</h2><br /><button class="btn btn-positive btn-block" onclick="navigator.app.exitApp()">Yay!</button>';
+                    var elementP2 = document.getElementById("p2");
+                    elementP2.innerHTML = html;
+                    var elementTable1 = document.getElementById("table1");
+                    elementTable1.innerHTML = "";
+                    cordova.plugins.backgroundMode.disable();
+                    var elementTable1 = document.getElementById("bar2");
+                    elementBar2.innerHTML = "";
+                }
             }
 
             function renderBadges(questionNum) {

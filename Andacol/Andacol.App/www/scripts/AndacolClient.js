@@ -1,13 +1,13 @@
-var AndacolClient = function() {
+var NewQuestionsAvailable = false;
+
+var AndacolClient = function () {
 	var self = this;
 
 	$.connection.hub.url = "http://andacol.azurewebsites.net/signalr";
 	self.andacolHub = $.connection.andacolHub;
 
 	self.andacolHub.client.questionsUpdated = function () {
-
-		// TODO: Osvježi pitanja
-		
+	    NewQuestionsAvailable = true;
 	};
 
 	self.connect = function () {
